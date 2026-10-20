@@ -1,75 +1,53 @@
-# React + TypeScript + Vite
+# QardLink Admin
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A UI-only, fully interactive demo of the QardLink Foundation console — a halal, riba-free micro-lending platform for Nigerian small businesses. All data is deterministic mock data seeded in the browser; there is no backend.
 
-Currently, two official plugins are available:
+## Run
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+Production preview:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```bash
+npm run build
+npm run preview
+```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Demo accounts
+
+| Role | Email | Password | Lands on |
+| --- | --- | --- | --- |
+| Founder | `amina@qardlink.ng` | `qardlink` | `/overview` |
+| Developer | `chinedu@qardlink.ng` | `qardlink` | `/system` |
+
+Sessions are stored in `sessionStorage` under `qardlink.session`. Reset the demo by signing out.
+
+## What's inside
+
+- **Founder surfaces** — Overview, Loan queue (approve/decline), Loans, Borrowers, Partners, Trust & compliance, Pool, Analytics, Escalations, Notifications, Settings.
+- **Developer surfaces** — System health, User management, Notification delivery logs. No financial data is exposed to this role.
+- **Role guards** — wrong-role visits are redirected to the role's home; unknown routes render a branded 404.
+- **Design system** — "Emerald Grove" tokens, Instrument Sans/Serif, emerald primary with operational accents; responsive tables collapse to card lists on mobile; Recharts visualisations with reduced motion respected.
+- **Interactivity** — approve/decline with pool balance updates and toasts, escalation case viewer, notification replay, webhook re-sync, profile settings, command palette (`⌘K` / `Ctrl+K`).
+
+## Structure
 
 ```
+src/
+  components/app/   shell, command palette
+  components/ui/    design-system primitives (table, overlay, chart, etc.)
+  lib/              auth, store, seed, metrics, formatting
+  pages/            founder/, dev/, Login, Profile, NotFound
+```
+
+See `PRODUCT.md` for the product brief and `DESIGN.md` for the visual system.
+
+## Scripts
+
+- `npm run dev` — Vite dev server
+- `npm run build` — type-check and production build
+- `npm run preview` — serve the production build
+- `npm run lint` — ESLint
