@@ -160,17 +160,17 @@ export function Loans() {
         }
       />
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 border-y border-line bg-surface py-1 lg:grid-cols-4">
         <Kpi label="Total lent" value={moneyCompact(state.loans.filter((l) => l.status !== 'pending').reduce((s, l) => s + l.amount, 0))} hint={`${state.loans.filter((l) => l.status !== 'pending').length} disbursed`} />
         <Kpi label="Outstanding" value={moneyCompact(active.reduce((s, l) => s + l.outstanding, 0))} hint={`${active.length} active loans`} tone="pool" />
-        <Kpi label="Overdue" value={String(overdue.length)} hint={moneyCompact(overdue.reduce((s, l) => s + l.outstanding, 0))} tone="overdue" />
+        <Kpi label="Overdue" value={String(overdue.length)} hint={moneyCompact(overdue.reduce((s, l) => s + l.outstanding, 0))} tone="overdue" emphasis />
         <Kpi label="Fully repaid" value={String(state.loans.filter((l) => l.status === 'repaid').length)} hint={`${percent((state.loans.filter((l) => l.status === 'repaid').length / (state.loans.filter((l) => l.status !== 'pending').length || 1)) * 100)} of disbursed loans`} tone="positive" />
       </div>
 
       <div className="mt-4">
         <Panel>
           <div className="flex flex-wrap items-center gap-3 border-b border-line px-4 py-3">
-            <div className="w-[180px]">
+            <div className="w-full sm:w-[180px]">
               <Select value={status} onChange={(e) => setStatus(e.target.value as typeof status)} aria-label="Filter by status">
                 {statusOptions.map((o) => (
                   <option key={o.value} value={o.value}>{o.label}</option>

@@ -117,17 +117,17 @@ export function NotificationLogs() {
         }
       />
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 border-y border-line bg-surface py-1 lg:grid-cols-4">
         <Kpi label="Events (24h)" value={String(state.notifications.length)} hint="All transports" />
         <Kpi label="Delivered" value={String(state.notifications.filter((n) => n.status === 'delivered').length)} hint="Successful deliveries" tone="positive" />
-        <Kpi label="Failed" value={String(state.notifications.filter((n) => n.status === 'failed').length)} hint="Within retry budget" tone="overdue" />
+        <Kpi label="Failed" value={String(state.notifications.filter((n) => n.status === 'failed').length)} hint="Within retry budget" tone="overdue" emphasis />
         <Kpi label="Queued" value={String(state.notifications.filter((n) => n.status === 'queued').length)} hint="Waiting on worker" tone="due" />
       </div>
 
       <div className="mt-4">
         <Panel>
           <div className="flex flex-wrap items-center gap-3 border-b border-line px-4 py-3">
-            <div className="w-[150px]">
+            <div className="w-full sm:w-[150px]">
               <Select value={channel} onChange={(e) => setChannel(e.target.value as typeof channel)} aria-label="Filter by transport">
                 <option value="all">All transports</option>
                 <option value="email">email</option>

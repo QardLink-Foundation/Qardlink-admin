@@ -13,7 +13,7 @@ export function Panel({
   return (
     <As
       className={cn(
-        'rounded-lg border border-line bg-surface shadow-panel',
+        'rounded-lg border border-line bg-surface',
         className,
       )}
     >
@@ -51,7 +51,7 @@ export function PanelHeader({
 
 export function Card({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <div className={cn('rounded-lg border border-line bg-surface p-4 shadow-panel', className)}>
+    <div className={cn('rounded-lg border border-line bg-surface p-4', className)}>
       {children}
     </div>
   )
@@ -69,13 +69,15 @@ export function PageHeader({
   title,
   description,
   action,
+  finding,
 }: {
   title: string
   description?: string
   action?: ReactNode
+  finding?: ReactNode
 }) {
   return (
-    <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+    <div className="mb-5 flex flex-col items-start gap-3 sm:mb-6 sm:flex-row sm:items-end sm:justify-between">
       <div>
         <h1 className="text-[24px] leading-tight font-semibold tracking-[-0.02em] text-ink">
           {title}
@@ -83,8 +85,9 @@ export function PageHeader({
         {description ? (
           <p className="mt-1 max-w-[70ch] text-[13px] text-ink-muted">{description}</p>
         ) : null}
+        {finding ? <p className="mt-2 text-[13px] font-medium text-emerald-800">{finding}</p> : null}
       </div>
-      {action ? <div className="flex items-center gap-2">{action}</div> : null}
+      {action ? <div className="flex flex-wrap items-center gap-2 max-sm:w-full">{action}</div> : null}
     </div>
   )
 }
@@ -96,6 +99,8 @@ export function Kpi({
   delta,
   tone = 'neutral',
   hint,
+  emphasis = false,
+  className,
 }: {
   label: string
   value: ReactNode
@@ -103,6 +108,8 @@ export function Kpi({
   delta?: { value: string; direction: 'up' | 'down' }
   tone?: 'neutral' | 'positive' | 'pool' | 'due' | 'overdue'
   hint?: string
+  emphasis?: boolean
+  className?: string
 }) {
   const accent: Record<string, string> = {
     neutral: 'text-ink',
@@ -112,10 +119,10 @@ export function Kpi({
     overdue: 'text-overdue',
   }
   return (
-    <div className="flex flex-col gap-1 rounded-lg border border-line bg-surface px-4 py-3.5 shadow-panel">
+    <div className={cn('flex min-w-0 flex-col gap-1 border-l border-line px-3 py-2 first:border-l-0', className)}>
       <SectionLabel>{label}</SectionLabel>
       <div className="flex items-baseline gap-1.5">
-        <span className={cn('tnum text-[26px] leading-none font-semibold tracking-[-0.02em]', accent[tone])}>
+        <span className={cn('tnum leading-none font-semibold tracking-[-0.025em]', emphasis ? 'text-[32px]' : 'text-[24px]', accent[tone])}>
           {value}
         </span>
         {unit ? <span className="text-[12px] text-ink-subtle">{unit}</span> : null}

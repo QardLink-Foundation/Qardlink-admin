@@ -116,17 +116,17 @@ export function UserManagement() {
         </p>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 border-y border-line bg-surface py-1 lg:grid-cols-4">
         <Kpi label="Registered users" value={String(state.borrowers.length)} hint="All borrower accounts" />
         <Kpi label="Active" value={String(state.borrowers.filter((b) => b.status === 'active').length)} hint="No open technical issue" tone="positive" />
-        <Kpi label="Flagged" value={String(state.borrowers.filter((b) => b.status === 'flagged').length + Object.keys(issues).length)} hint="Including technical flags" tone="due" />
+        <Kpi label="Flagged" value={String(state.borrowers.filter((b) => b.status === 'flagged').length + Object.keys(issues).length)} hint="Including technical flags" tone="due" emphasis />
         <Kpi label="New this week" value={String(state.borrowers.filter((b) => NOW - new Date(b.joinedAt).getTime() < 7 * 86400000).length)} hint="Registered in 7 days" tone="pool" />
       </div>
 
       <div className="mt-4">
         <Panel>
           <div className="flex flex-wrap items-center gap-3 border-b border-line px-4 py-3">
-            <div className="w-[150px]">
+            <div className="w-full sm:w-[150px]">
               <Select value={status} onChange={(e) => setStatus(e.target.value as typeof status)} aria-label="Filter by status">
                 <option value="all">All statuses</option>
                 <option value="active">Active</option>

@@ -107,9 +107,9 @@ export function NotificationsAdmin() {
         description="The system-wide notification log, and the triggers that produce it. Delivery failures surface here first."
       />
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 border-y border-line bg-surface py-1 lg:grid-cols-4">
         <Kpi label="Delivered" value={String(state.notifications.filter((n) => n.status === 'delivered').length)} hint="Across all channels" tone="positive" />
-        <Kpi label="Failed" value={String(state.notifications.filter((n) => n.status === 'failed').length)} hint="Need a retry" tone="overdue" />
+        <Kpi label="Failed" value={String(state.notifications.filter((n) => n.status === 'failed').length)} hint="Need a retry" tone="overdue" emphasis />
         <Kpi label="Queued" value={String(state.notifications.filter((n) => n.status === 'queued').length)} hint="Awaiting send" tone="due" />
         <Kpi label="Email / in-app / hook" value={`${counts.email}/${counts.in_app}/${counts.webhook}`} hint="Channel volume" tone="pool" />
       </div>
@@ -126,8 +126,8 @@ export function NotificationsAdmin() {
               onChange={setTab}
             />
             {tab === 'log' ? (
-              <div className="ml-auto flex w-full items-center gap-2 sm:w-auto">
-                <div className="w-[150px]">
+              <div className="ml-auto flex w-full flex-col items-stretch gap-2 sm:w-auto sm:flex-row">
+                <div className="w-full sm:w-[150px]">
                   <Select value={channel} onChange={(e) => setChannel(e.target.value as typeof channel)} aria-label="Filter by channel">
                     <option value="all">All channels</option>
                     <option value="email">Email</option>
@@ -135,7 +135,7 @@ export function NotificationsAdmin() {
                     <option value="webhook">Webhook</option>
                   </Select>
                 </div>
-                <div className="flex-1 sm:w-[250px]">
+                <div className="w-full flex-1 sm:w-[250px]">
                   <SearchInput value={query} onChange={setQuery} placeholder="Search notifications…" />
                 </div>
               </div>

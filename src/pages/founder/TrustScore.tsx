@@ -123,9 +123,9 @@ export function TrustScore() {
         description="Every score change across the platform, with its reason. Anomalies are surfaced for manual review before they affect lending decisions."
       />
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 border-y border-line bg-surface py-1 lg:grid-cols-4">
         <Kpi label="Average score" value={String(Math.round(avg))} unit="/ 100" hint="Across all borrowers" tone="positive" />
-        <Kpi label="Flagged anomalies" value={String(flagged.length)} hint="Awaiting manual review" tone="overdue" />
+        <Kpi label="Flagged anomalies" value={String(flagged.length)} hint="Awaiting manual review" tone="overdue" emphasis />
         <Kpi label="Events logged" value={String(state.trustEvents.length)} hint="Full audit trail" />
         <Kpi label="Positive changes" value={String(upgrades)} hint="Repayments and completed loans" tone="pool" />
       </div>
@@ -166,7 +166,7 @@ export function TrustScore() {
       <div className="mt-4">
         <Panel>
           <div className="flex flex-wrap items-center gap-3 border-b border-line px-4 py-3">
-            <div className="w-[220px]">
+            <div className="w-full sm:w-[220px]">
               <Select value={reason} onChange={(e) => setReason(e.target.value)} aria-label="Filter by reason">
                 <option value="all">All reasons</option>
                 {reasons.map((r) => <option key={r} value={r}>{r}</option>)}

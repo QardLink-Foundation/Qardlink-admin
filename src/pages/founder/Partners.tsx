@@ -157,7 +157,7 @@ export function Partners() {
         }
       />
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 border-y border-line bg-surface py-1 lg:grid-cols-4">
         <Kpi label="Active partners" value={String(state.partners.filter((p) => p.status === 'active').length)} hint={`${state.partners.length} total`} tone="positive" />
         <Kpi label="Total contributed" value={moneyCompact(state.partners.reduce((s, p) => s + p.contributed, 0))} hint="Across all partners" />
         <Kpi label="Referrals" value={String(state.partners.reduce((s, p) => s + p.referrals, 0))} hint="Borrowers introduced" />

@@ -30,6 +30,7 @@ export function System() {
   const toast = useToast()
   const [retried, setRetried] = useState<string[]>([])
   const system = state.system
+  const degradedEndpoints = system.webhooks.filter((hook) => hook.status !== 'healthy').length
 
   const uptime = useMemo(
     () =>
@@ -45,6 +46,9 @@ export function System() {
       <PageHeader
         title="System overview"
         description="Platform health for the engineering team. Uptime, errors, webhook delivery and queue depth — no financial data on this surface."
+        finding={degradedEndpoints > 0
+          ? `${degradedEndpoints} webhook ${degradedEndpoints === 1 ? 'endpoint needs' : 'endpoints need'} attention. Retry it in Webhook delivery.`
+          : 'All webhook endpoints are healthy.'}
         action={
           <Button size="sm" icon={<Icon name="refresh" className="size-3.5" />} onClick={() => toast.push({ title: 'Metrics refreshed', description: 'Latest health snapshot loaded.', tone: 'info' })}>
             Refresh
@@ -52,9 +56,9 @@ export function System() {
         }
       />
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Kpi label="Uptime (30d)" value={`${system.uptimePct}%`} hint="Target 99.95%" tone="positive" />
-        <Kpi label="Error rate" value={`${system.errorRate}%`} hint="5xx responses" tone="due" />
+      <div className="grid grid-cols-2 gap-3 border-y border-line bg-surface py-1 lg:grid-cols-4">
+        <Kpi label="Uptime (30d)" value={`${system.uptimePct}%`} hint="Target 99.95%" />
+        <Kpi label="Error rate" value={`${system.errorRate}%`} hint="5xx responses" emphasis />
         <Kpi label="p95 latency" value={`${system.p95LatencyMs}ms`} hint="API responses" tone="pool" />
         <Kpi label="Queue depth" value={String(system.queueDepth)} hint="Background jobs" />
       </div>

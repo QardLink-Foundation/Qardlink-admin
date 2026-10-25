@@ -122,23 +122,23 @@ export function Borrowers() {
         description="Everyone who has registered on QardLink. Trust score, loan history, and the referrer link that brought them in."
       />
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 border-y border-line bg-surface py-1 lg:grid-cols-4">
         <Kpi label="Registered" value={String(state.borrowers.length)} hint="Borrowers on the platform" />
         <Kpi label="Active" value={String(state.borrowers.filter((b) => b.status === 'active').length)} hint="In good standing" tone="positive" />
-        <Kpi label="Flagged or suspended" value={String(state.borrowers.filter((b) => b.status !== 'active').length)} hint="Needs review" tone="due" />
+        <Kpi label="Flagged or suspended" value={String(state.borrowers.filter((b) => b.status !== 'active').length)} hint="Needs review" tone="due" emphasis />
         <Kpi label="Average trust" value={String(Math.round(avgTrust))} unit="/ 100" hint="Across all borrowers" />
       </div>
 
       <div className="mt-4">
         <Panel>
           <div className="flex flex-wrap items-center gap-3 border-b border-line px-4 py-3">
-            <div className="w-[150px]">
+            <div className="w-full sm:w-[150px]">
               <Select value={tier} onChange={(e) => setTier(e.target.value as typeof tier)} aria-label="Filter by tier">
                 <option value="all">All tiers</option>
                 {TIERS.map((t) => <option key={t} value={t}>{t}</option>)}
               </Select>
             </div>
-            <div className="w-[150px]">
+            <div className="w-full sm:w-[150px]">
               <Select value={status} onChange={(e) => setStatus(e.target.value as typeof status)} aria-label="Filter by status">
                 <option value="all">All statuses</option>
                 <option value="active">Active</option>

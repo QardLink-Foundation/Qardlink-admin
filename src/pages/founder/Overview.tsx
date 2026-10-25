@@ -57,6 +57,11 @@ export function Overview() {
       <PageHeader
         title="Admin overview"
         description={`${new Date().toLocaleDateString('en-NG', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })} · Everything that needs your attention, and the health of the pool behind it.`}
+        finding={metrics.pendingApprovals > 0
+          ? `${metrics.pendingApprovals} applications are waiting for a decision.`
+          : metrics.openEscalations > 0
+            ? `${metrics.openEscalations} repayment escalations need follow-up.`
+            : 'No urgent decisions are waiting.'}
         action={
           <>
             <Button
@@ -73,11 +78,62 @@ export function Overview() {
         }
       />
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Kpi label="Total pool balance" value={moneyCompact(pool.total)} hint={`${moneyCompact(pool.lending)} lending · ${moneyCompact(pool.operational)} operational`} tone="positive" delta={{ value: '4.2%', direction: 'up' }} />
+      <div className="grid grid-cols-2 gap-3 border-y border-line bg-surface py-1 lg:grid-cols-4">
+        <Kpi label="Total pool balance" value={moneyCompact(pool.total)} hint={`${moneyCompact(pool.lending)} lending · ${moneyCompact(pool.operational)} operational`} tone="positive" emphasis />
         <Kpi label="Active loans" value={number(metrics.activeLoans)} hint={`${moneyCompact(metrics.outstanding)} outstanding`} />
         <Kpi label="Total disbursed" value={moneyCompact(metrics.totalDisbursed)} hint={`${number(metrics.totalBorrowers)} borrowers funded`} tone="pool" />
-        <Kpi label="Repayment rate" value={percent(metrics.repaymentRate)} hint={`${metrics.overdueLoans} overdue · ${metrics.writtenOff} written off`} delta={{ value: '1.8%', direction: 'up' }} />
+        <Kpi label="Repayment rate" value={percent(metrics.repaymentRate)} hint={`${metrics.overdueLoans} overdue · ${metrics.writtenOff} written off`} />
+      </div>
+
+      <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <Panel className="lg:col-span-2">
+          <PanelHeader title="Awaiting approval" meta={`${metrics.pendingApprovals} applications in the queue`} action={<Link to="/queue" className="text-[12px] font-medium text-emerald-800 hover:underline">Open queue</Link>} />
+          {pending.length === 0 ? (
+            <p className="px-4 py-8 text-center text-[13px] text-ink-subtle">The queue is clear. Every application has been decided.</p>
+          ) : (
+            <ul className="divide-y divide-line">
+              {pending.map((loan) => {
+                const borrower = state.borrowers.find((b) => b.id === loan.borrowerId)
+                const referrer = getReferrer(state, loan.referrerId)
+                return (
+                  <li key={loan.id} className="flex flex-wrap items-center gap-3 px-4 py-3">
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-[13px] font-medium text-ink">{borrower?.name}</p>
+                      <p className="truncate text-[12px] text-ink-muted">
+                        {loan.purpose} · via {referrer.name}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="tnum text-[13px] font-medium text-ink">{money(loan.amount)}</p>
+                      <p className="text-[11px] text-ink-subtle">{loan.frequency} · {loan.installmentsTotal} instalments</p>
+                    </div>
+                    <Button size="sm" variant="primary" onClick={() => approve(loan.id)}>Approve</Button>
+                  </li>
+                )
+              })}
+            </ul>
+          )}
+        </Panel>
+
+        <Panel>
+          <PanelHeader title="Escalations" meta={`${metrics.openEscalations} open`} action={<Link to="/escalations" className="text-[12px] font-medium text-emerald-800 hover:underline">All</Link>} />
+          <ul className="divide-y divide-line">
+            {escalations.map((esc) => {
+              const borrower = state.borrowers.find((b) => b.id === esc.borrowerId)
+              return (
+                <li key={esc.id} className="px-4 py-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="truncate text-[13px] font-medium text-ink">{borrower?.name}</p>
+                    <span className="tnum shrink-0 text-[12px] font-medium text-overdue">{esc.daysOverdue}d</span>
+                  </div>
+                  <p className="mt-0.5 text-[12px] text-ink-muted">
+                    {money(esc.amountOverdue)} overdue · {esc.status === 'contacted' ? 'Referrer contacted' : 'Not contacted'}
+                  </p>
+                </li>
+              )
+            })}
+          </ul>
+        </Panel>
       </div>
 
       <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
@@ -133,57 +189,6 @@ export function Overview() {
               <TierProgress className="mt-2" steps={['New', 'Trusted', 'Established', 'Elite']} current={activeTierIndex} />
             </div>
           </div>
-        </Panel>
-      </div>
-
-      <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <Panel className="lg:col-span-2">
-          <PanelHeader title="Awaiting approval" meta={`${metrics.pendingApprovals} applications in the queue`} action={<Link to="/queue" className="text-[12px] font-medium text-emerald-800 hover:underline">Open queue</Link>} />
-          {pending.length === 0 ? (
-            <p className="px-4 py-8 text-center text-[13px] text-ink-subtle">The queue is clear. Every application has been decided.</p>
-          ) : (
-            <ul className="divide-y divide-line">
-              {pending.map((loan) => {
-                const borrower = state.borrowers.find((b) => b.id === loan.borrowerId)
-                const referrer = getReferrer(state, loan.referrerId)
-                return (
-                  <li key={loan.id} className="flex flex-wrap items-center gap-3 px-4 py-3">
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-[13px] font-medium text-ink">{borrower?.name}</p>
-                      <p className="truncate text-[12px] text-ink-muted">
-                        {loan.purpose} · via {referrer.name}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="tnum text-[13px] font-medium text-ink">{money(loan.amount)}</p>
-                      <p className="text-[11px] text-ink-subtle">{loan.frequency} · {loan.installmentsTotal} instalments</p>
-                    </div>
-                    <Button size="sm" variant="primary" onClick={() => approve(loan.id)}>Approve</Button>
-                  </li>
-                )
-              })}
-            </ul>
-          )}
-        </Panel>
-
-        <Panel>
-          <PanelHeader title="Escalations" meta={`${metrics.openEscalations} open`} action={<Link to="/escalations" className="text-[12px] font-medium text-emerald-800 hover:underline">All</Link>} />
-          <ul className="divide-y divide-line">
-            {escalations.map((esc) => {
-              const borrower = state.borrowers.find((b) => b.id === esc.borrowerId)
-              return (
-                <li key={esc.id} className="px-4 py-3">
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="truncate text-[13px] font-medium text-ink">{borrower?.name}</p>
-                    <span className="tnum shrink-0 text-[12px] font-medium text-overdue">{esc.daysOverdue}d</span>
-                  </div>
-                  <p className="mt-0.5 text-[12px] text-ink-muted">
-                    {money(esc.amountOverdue)} overdue · {esc.status === 'contacted' ? 'Referrer contacted' : 'Not contacted'}
-                  </p>
-                </li>
-              )
-            })}
-          </ul>
         </Panel>
       </div>
 

@@ -50,8 +50,8 @@ export function Escalations() {
         description="Missed payments that need a human decision. The referrer is your first lever — they know the borrower and carry the relationship."
       />
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Kpi label="Open escalations" value={String(metrics.openEscalations)} hint="Across all borrowers" tone="overdue" />
+      <div className="grid grid-cols-2 gap-3 border-y border-line bg-surface py-1 lg:grid-cols-4">
+        <Kpi label="Open escalations" value={String(metrics.openEscalations)} hint="Across all borrowers" tone="overdue" emphasis />
         <Kpi label="Overdue value" value={moneyCompact(state.escalations.filter((e) => e.status !== 'resolved').reduce((s, e) => s + e.amountOverdue, 0))} hint="At risk in the pool" />
         <Kpi label="Referrers contacted" value={String(state.escalations.filter((e) => e.referrerContactedAt).length)} hint="Awaiting commitments" tone="due" />
         <Kpi label="Resolved" value={String(state.escalations.filter((e) => e.status === 'resolved').length)} hint="This cycle" tone="positive" />

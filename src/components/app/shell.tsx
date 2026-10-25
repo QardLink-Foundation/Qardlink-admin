@@ -57,7 +57,7 @@ export function Shell() {
   const [mobileOpen, setMobileOpen] = useState(false)
 
   const nav = useMemo(
-    () => buildNav(state).filter((item) => item.role === user?.role),
+    () => buildNav(state).filter((item) => item.role === user?.role || item.role === 'both'),
     [state, user?.role],
   )
   const current = nav.find((item) => location.pathname.startsWith(item.to))
@@ -72,6 +72,10 @@ export function Shell() {
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') {
+        setMobileOpen(false)
+        setNotifOpen(false)
+      }
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault()
         setPaletteOpen((v) => !v)
@@ -85,7 +89,7 @@ export function Shell() {
     <div className="min-h-dvh bg-canvas">
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-40 flex w-[236px] flex-col bg-emerald-950 text-emerald-100 transition-transform duration-200 lg:translate-x-0',
+          'fixed inset-y-0 left-0 z-40 flex w-[236px] flex-col bg-emerald-900 text-emerald-100 transition-transform duration-200 lg:translate-x-0',
           mobileOpen ? 'translate-x-0' : '-translate-x-full',
         )}
       >
@@ -105,15 +109,25 @@ export function Shell() {
             <p className="text-[14px] font-semibold tracking-[-0.01em] text-white">QardLink</p>
             <p className="text-[10.5px] text-emerald-200/55">Foundation console</p>
           </div>
+          <button
+            type="button"
+            onClick={() => setMobileOpen(false)}
+            aria-label="Close navigation"
+            className="ml-auto rounded-md p-2 text-emerald-100/70 hover:bg-white/10 hover:text-white lg:hidden"
+          >
+            <Icon name="x" className="size-4" />
+          </button>
         </div>
 
-        <nav className="flex-1 overflow-y-auto px-2 py-3 scrollbar-slim">
-          <p className="px-2 pb-1.5 text-[10px] font-semibold tracking-[0.08em] text-emerald-200/40 uppercase">
-            {user?.role === 'founder' ? 'Foundation' : 'Platform'}
-          </p>
+        <nav aria-label="Primary navigation" className="flex-1 overflow-y-auto px-2 py-3 scrollbar-slim">
           <ul className="flex flex-col gap-0.5">
-            {nav.map((item) => (
+            {nav.map((item, index) => (
               <li key={item.to}>
+                {index === 0 || nav[index - 1]?.section !== item.section ? (
+                  <p className={cn('px-2 pb-1.5 text-[10px] font-semibold tracking-[0.06em] text-emerald-200/55', index > 0 && 'pt-4')}>
+                    {item.section}
+                  </p>
+                ) : null}
                 <NavLink
                   to={item.to}
                   onClick={() => setMobileOpen(false)}
@@ -196,7 +210,7 @@ export function Shell() {
       ) : null}
 
       <div className="lg:pl-[236px]">
-        <header className="sticky top-0 z-20 flex h-14 items-center gap-3 border-b border-line bg-canvas/90 px-4 backdrop-blur-sm sm:px-6">
+        <header className="sticky top-0 z-20 flex h-14 gap-2 border-b border-line bg-canvas/95 px-3 backdrop-blur-sm sm:gap-3 sm:px-6">
           <button
             onClick={() => setMobileOpen(true)}
             aria-label="Open navigation"
@@ -204,10 +218,10 @@ export function Shell() {
           >
             <Icon name="menu" className="size-5" />
           </button>
-          <div className="hidden items-center gap-1.5 text-[12.5px] text-ink-subtle sm:flex">
+          <div className="flex min-w-0 items-center gap-1.5 text-[12px] text-ink-subtle sm:text-[12.5px]">
             <span>{user?.role === 'founder' ? 'Foundation' : 'Platform'}</span>
-            <Icon name="chevronRight" className="size-3" />
-            <span className="font-medium text-ink">{pageLabel}</span>
+            <Icon name="chevronRight" className="size-3 shrink-0" />
+            <span className="truncate font-medium text-ink">{pageLabel}</span>
           </div>
 
           <div className="ml-auto flex items-center gap-1.5">
@@ -254,7 +268,7 @@ export function Shell() {
           </div>
         </header>
 
-        <main className="mx-auto w-full max-w-[1200px] px-4 py-6 sm:px-6">
+        <main className="safe-bottom mx-auto w-full max-w-[1280px] px-4 py-6 sm:px-6">
           <Suspense
             fallback={
               <div role="status" aria-live="polite" className="flex items-center justify-center py-24">

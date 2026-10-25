@@ -22,6 +22,7 @@ interface DataTableProps<T> {
   dense?: boolean
   emptyState?: ReactNode
   mobileCard?: (row: T) => ReactNode
+  stickyHeader?: boolean
 }
 
 export function DataTable<T>({
@@ -34,6 +35,7 @@ export function DataTable<T>({
   dense = false,
   emptyState,
   mobileCard,
+  stickyHeader = true,
 }: DataTableProps<T>) {
   const [sort, setSort] = useState<{ key: string; dir: 'asc' | 'desc' } | null>(null)
 
@@ -73,20 +75,27 @@ export function DataTable<T>({
 
   return (
     <>
-      {mobileCard ? (
-        <ul className="divide-y divide-line sm:hidden">
+      <ul className="divide-y divide-line sm:hidden">
           {sorted.length === 0 ? (
             <li className="px-4 py-8">{emptyState}</li>
           ) : (
             sorted.map((row) => (
               <li key={getRowId(row)} onClick={onRowClick ? () => onRowClick(row) : undefined}>
-                {mobileCard(row)}
+                {mobileCard ? mobileCard(row) : (
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-3 px-4 py-3.5">
+                    {columns.map((col) => (
+                      <div key={col.key} className="min-w-0">
+                        {col.header ? <p className="mb-0.5 text-[10.5px] font-medium text-ink-subtle">{col.header}</p> : null}
+                        <div className="min-w-0 text-[12.5px]">{col.render(row)}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </li>
             ))
           )}
         </ul>
-      ) : null}
-      <div className={cn('overflow-x-auto scrollbar-slim', mobileCard && 'hidden sm:block')}>
+      <div className="hidden overflow-x-auto scrollbar-slim sm:block">
       <table className="w-full min-w-full text-[13px] sm:min-w-[640px]">
         <thead>
           <tr className="border-b border-line-strong">
@@ -98,7 +107,9 @@ export function DataTable<T>({
                   scope="col"
                   style={col.width ? { width: col.width } : undefined}
                   className={cn(
-                    'sticky top-0 z-10 bg-canvas/95 px-3 text-left text-[11px] font-semibold tracking-[0.03em] text-ink-subtle uppercase backdrop-blur-sm',
+                    stickyHeader
+                      ? 'sticky top-14 z-10 bg-surface px-3 text-left text-[12px] font-medium text-ink-muted'
+                      : 'bg-surface px-3 text-left text-[12px] font-medium text-ink-muted',
                     dense ? 'py-2' : 'py-2.5',
                     col.align === 'right' && 'text-right',
                     col.align === 'center' && 'text-center',
@@ -110,8 +121,8 @@ export function DataTable<T>({
                       type="button"
                       onClick={() => toggleSort(col)}
                       className={cn(
-                        'inline-flex items-center gap-1 uppercase hover:text-ink',
-                        active && 'text-emerald-700',
+                        'inline-flex items-center gap-1 hover:text-ink',
+                        active && 'text-emerald-800',
                       )}
                     >
                       {col.header}

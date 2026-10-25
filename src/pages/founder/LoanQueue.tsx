@@ -169,8 +169,8 @@ export function LoanQueue() {
         description="Applications waiting on a decision. Open one for the full picture — borrower history, referrer quality, and the repayment plan."
       />
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-        <Kpi label="In queue" value={String(state.loans.filter((l) => l.status === 'pending').length)} hint="Awaiting a decision" tone="due" />
+      <div className="grid grid-cols-2 gap-3 border-y border-line bg-surface py-1 sm:grid-cols-3">
+        <Kpi label="In queue" value={String(state.loans.filter((l) => l.status === 'pending').length)} hint="Awaiting a decision" tone="due" emphasis />
         <Kpi label="Value requested" value={moneyCompact(totalRequested)} hint="Across the visible queue" />
         <Kpi label="Average trust score" value={String(Math.round(avgTrust))} unit="/ 100" hint="Of visible applicants" tone="positive" />
       </div>

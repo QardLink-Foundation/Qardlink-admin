@@ -6,12 +6,12 @@ type Size = 'sm' | 'md'
 
 const base =
   'inline-flex items-center justify-center gap-1.5 rounded-md font-medium whitespace-nowrap ' +
-  'transition-[background-color,border-color,color,transform] duration-100 ease-out ' +
+  'touch-manipulation transition-[background-color,border-color,color,transform] duration-100 ease-out ' +
   'active:scale-[0.98] disabled:pointer-events-none disabled:opacity-45 select-none'
 
 const variants: Record<Variant, string> = {
   primary:
-    'bg-emerald-600 text-white hover:bg-emerald-700 active:bg-emerald-800 shadow-panel',
+    'bg-emerald-600 text-white hover:bg-emerald-700 active:bg-emerald-800',
   secondary:
     'border border-line-strong bg-surface text-ink hover:border-emerald-300 hover:bg-emerald-50/60',
   ghost: 'text-ink-muted hover:bg-emerald-50 hover:text-emerald-800',
@@ -20,8 +20,8 @@ const variants: Record<Variant, string> = {
 }
 
 const sizes: Record<Size, string> = {
-  sm: 'h-7 px-2.5 text-[12.5px]',
-  md: 'h-9 px-3.5 text-[13px]',
+  sm: 'h-10 px-3 text-[13px] sm:h-7 sm:px-2.5 sm:text-[12.5px]',
+  md: 'h-10 px-3.5 text-[13px] sm:h-9',
 }
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -57,7 +57,7 @@ export function IconButton({
       aria-label={label}
       title={label}
       className={cn(
-        'inline-flex size-8 items-center justify-center rounded-md text-ink-muted',
+        'inline-flex size-10 items-center justify-center rounded-md text-ink-muted sm:size-8',
         'hover:bg-emerald-50 hover:text-emerald-800 active:scale-95 disabled:opacity-45',
         className,
       )}

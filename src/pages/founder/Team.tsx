@@ -132,11 +132,11 @@ export function Team() {
         }
       />
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 border-y border-line bg-surface py-1 lg:grid-cols-4">
         <Kpi label="Team members" value={String(state.team.length)} hint="Foundation accounts" />
         <Kpi label="Founder-level" value={String(state.team.filter((m) => m.accessLevel === 'founder').length)} hint="Full financial access" tone="positive" />
         <Kpi label="Developer" value={String(state.team.filter((m) => m.accessLevel === 'dev').length)} hint="Scoped operational access" tone="pool" />
-        <Kpi label="Pending invites" value={String(state.team.filter((m) => m.status === 'invited').length)} hint="Not yet signed in" tone="due" />
+        <Kpi label="Pending invites" value={String(state.team.filter((m) => m.status === 'invited').length)} hint="Not yet signed in" tone="due" emphasis />
       </div>
 
       <div className="mt-4">

@@ -52,7 +52,7 @@ export function Analytics() {
         description="How capital recycles, which cohorts repay, and which partners bring durable borrowers."
         action={
           <>
-            <div className="w-[150px]">
+            <div className="w-full sm:w-[150px]">
               <Select value={reportWindow} onChange={(e) => setReportWindow(e.target.value)} aria-label="Reporting window">
                 <option value="4">Last 4 quarters</option>
                 <option value="6">Last 6 quarters</option>
@@ -71,8 +71,8 @@ export function Analytics() {
         }
       />
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Kpi label="Repayment rate" value={percent(metrics.repaymentRate)} hint="Closed loans fully repaid" tone="positive" delta={{ value: '1.8%', direction: 'up' }} />
+      <div className="grid grid-cols-2 gap-3 border-y border-line bg-surface py-1 lg:grid-cols-4">
+        <Kpi label="Repayment rate" value={percent(metrics.repaymentRate)} hint="Closed loans fully repaid" tone="positive" emphasis />
         <Kpi label="Repayment recovery" value={percent(recovery, 0)} hint="Repayments vs capital disbursed" tone="pool" />
         <Kpi label="Average ticket" value={moneyCompact(avgTicket)} hint="Per disbursed loan" />
         <Kpi label="Written off" value={moneyCompact(pool.writtenOff)} hint={`${metrics.writtenOff} loans`} tone="overdue" />

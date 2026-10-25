@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../../lib/store'
+import { useAuth } from '../../lib/auth'
 import { platformMetrics } from '../../lib/metrics'
 import type { Role } from '../../lib/auth'
 import { Icon, type IconName } from '../icons'
@@ -10,42 +11,44 @@ export interface NavItem {
   to: string
   label: string
   icon: IconName
-  role: Role
+  role: Role | 'both'
+  section: string
   badge?: number
 }
 
 export function buildNav(state: ReturnType<typeof useStore>['state']): NavItem[] {
   const m = platformMetrics(state)
   return [
-    { to: '/overview', label: 'Overview', icon: 'grid', role: 'founder' },
-    { to: '/queue', label: 'Loan queue', icon: 'inbox', role: 'founder', badge: m.pendingApprovals },
-    { to: '/loans', label: 'All loans', icon: 'receipt', role: 'founder' },
-    { to: '/pool', label: 'Pool management', icon: 'droplet', role: 'founder' },
-    { to: '/partners', label: 'Partners', icon: 'handshake', role: 'founder' },
-    { to: '/borrowers', label: 'Borrowers', icon: 'users', role: 'founder' },
-    { to: '/escalations', label: 'Escalations', icon: 'alert', role: 'founder', badge: m.openEscalations },
-    { to: '/trust', label: 'Trust scores', icon: 'shield', role: 'founder' },
-    { to: '/analytics', label: 'Analytics', icon: 'chart', role: 'founder' },
-    { to: '/team', label: 'Team & roles', icon: 'team', role: 'founder' },
-    { to: '/notifications', label: 'Notifications', icon: 'bell', role: 'founder' },
-    { to: '/system', label: 'System overview', icon: 'server', role: 'dev' },
-    { to: '/users', label: 'User management', icon: 'userList', role: 'dev' },
-    { to: '/logs', label: 'Notification logs', icon: 'list', role: 'dev' },
-    { to: '/profile', label: 'My profile', icon: 'user', role: 'dev' },
+    { to: '/overview', label: 'Overview', icon: 'grid', role: 'founder', section: 'Operations' },
+    { to: '/queue', label: 'Loan queue', icon: 'inbox', role: 'founder', section: 'Operations', badge: m.pendingApprovals },
+    { to: '/loans', label: 'All loans', icon: 'receipt', role: 'founder', section: 'Operations' },
+    { to: '/pool', label: 'Pool management', icon: 'droplet', role: 'founder', section: 'Operations' },
+    { to: '/partners', label: 'Partners', icon: 'handshake', role: 'founder', section: 'People & risk' },
+    { to: '/borrowers', label: 'Borrowers', icon: 'users', role: 'founder', section: 'People & risk' },
+    { to: '/escalations', label: 'Escalations', icon: 'alert', role: 'founder', section: 'People & risk', badge: m.openEscalations },
+    { to: '/trust', label: 'Trust scores', icon: 'shield', role: 'founder', section: 'People & risk' },
+    { to: '/analytics', label: 'Analytics', icon: 'chart', role: 'founder', section: 'Workspace' },
+    { to: '/team', label: 'Team & roles', icon: 'team', role: 'founder', section: 'Workspace' },
+    { to: '/notifications', label: 'Notifications', icon: 'bell', role: 'founder', section: 'Workspace' },
+    { to: '/system', label: 'System overview', icon: 'server', role: 'dev', section: 'Platform' },
+    { to: '/users', label: 'User management', icon: 'userList', role: 'dev', section: 'Platform' },
+    { to: '/logs', label: 'Notification logs', icon: 'list', role: 'dev', section: 'Platform' },
+    { to: '/profile', label: 'My profile', icon: 'user', role: 'both', section: 'Account' },
   ]
 }
 
 export function CommandPalette({ onClose }: { onClose: () => void }) {
   const { state } = useStore()
+  const { user } = useAuth()
   const navigate = useNavigate()
   const [query, setQuery] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
 
   const items = useMemo(() => {
-    const nav = buildNav(state).filter((item) => item.role === 'founder' || item.to === '/profile')
+    const nav = buildNav(state).filter((item) => item.role === user?.role || item.role === 'both')
     const q = query.trim().toLowerCase()
     return q ? nav.filter((item) => item.label.toLowerCase().includes(q)) : nav
-  }, [state, query])
+  }, [state, query, user?.role])
 
   useEffect(() => {
     const t = window.setTimeout(() => inputRef.current?.focus(), 40)

@@ -105,10 +105,11 @@ export function Pool() {
       <PageHeader
         title="Pool management"
         description="The lending and operational pools, every movement in and out, and how the 75 / 25 split is applied."
+        finding={`${moneyCompact(pool.lending)} is available in the lending pool; ${moneyCompact(pool.operational)} is held for operations.`}
       />
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Kpi label="Total balance" value={moneyCompact(pool.total)} hint="Lending + operational" tone="positive" />
+      <div className="grid grid-cols-2 gap-3 border-y border-line bg-surface py-1 lg:grid-cols-4">
+        <Kpi label="Total balance" value={moneyCompact(pool.total)} hint="Lending + operational" tone="positive" emphasis />
         <Kpi label="Lending pool" value={moneyCompact(pool.lending)} hint="Capital available to lend" />
         <Kpi label="Operational pool" value={moneyCompact(pool.operational)} hint="25% of every inflow" tone="pool" />
         <Kpi label="Recycled capital" value={moneyCompact(pool.repaid)} hint={`${percent((pool.repaid / (pool.contributed || 1)) * 100)} of contributions`} />
@@ -155,7 +156,7 @@ export function Pool() {
         <Panel>
           <PanelHeader title="Ledger" meta={`${events.length} entries`} />
           <div className="flex flex-wrap items-center gap-3 border-b border-line px-4 py-3">
-            <div className="w-[170px]">
+            <div className="w-full sm:w-[170px]">
               <Select value={type} onChange={(e) => setType(e.target.value as typeof type)} aria-label="Filter entry type">
                 <option value="all">All entries</option>
                 {Object.entries(typeLabel).map(([value, label]) => (
@@ -163,7 +164,7 @@ export function Pool() {
                 ))}
               </Select>
             </div>
-            <div className="w-[220px]">
+            <div className="w-full sm:w-[220px]">
               <Select value={partner} onChange={(e) => setPartner(e.target.value)} aria-label="Filter by partner">
                 <option value="all">All partners</option>
                 {partners.map((p) => (
@@ -172,7 +173,7 @@ export function Pool() {
               </Select>
             </div>
           </div>
-          <DataTable columns={columns} rows={events} getRowId={(e) => e.id} dense />
+          <DataTable columns={columns} rows={events} getRowId={(e) => e.id} dense stickyHeader={false} />
         </Panel>
       </div>
 
@@ -188,6 +189,7 @@ export function Pool() {
           ]}
           rows={partners}
           getRowId={(p) => p.id}
+          stickyHeader={false}
         />
         <div className="px-4 py-3">
           <SectionLabel>Reconciliation</SectionLabel>

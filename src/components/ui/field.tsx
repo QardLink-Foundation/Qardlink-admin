@@ -8,20 +8,22 @@ import { cn } from '../../lib/cn'
 
 const control =
   'w-full rounded-md border border-line-strong bg-surface px-2.5 text-[13px] text-ink ' +
-  'placeholder:text-ink-subtle transition-colors duration-100 ' +
-  'hover:border-emerald-300 focus:border-emerald-600 focus:outline-none ' +
+  'placeholder:text-ink-muted transition-colors duration-100 ' +
+  'hover:border-emerald-300 focus:border-emerald-600 ' +
   'disabled:cursor-not-allowed disabled:bg-canvas disabled:text-ink-subtle'
 
 export function Field({
   label,
   hint,
   error,
+  errorId,
   htmlFor,
   children,
 }: {
   label: string
   hint?: string
   error?: string
+  errorId?: string
   htmlFor?: string
   children: ReactNode
 }) {
@@ -30,7 +32,9 @@ export function Field({
       <span className="text-[12px] font-medium text-ink-muted">{label}</span>
       {children}
       {error ? (
-        <span className="text-[12px] text-overdue">{error}</span>
+        <span role="alert" id={errorId} className="text-[12px] text-overdue">
+          {error}
+        </span>
       ) : hint ? (
         <span className="text-[12px] text-ink-subtle">{hint}</span>
       ) : null}

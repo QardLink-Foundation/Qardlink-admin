@@ -30,7 +30,9 @@ Scale: 11 micro-label / 12 table meta / 13 dense / 14 body / 16 strong / 20 sect
 
 ## Layout
 
-Fixed dark sidebar (240px), sticky topbar (56px, search + role + notifications), scrolling content at max-width 1200 with 24px gutters. Data pages follow a fixed rhythm: page header → filter rail → content panel. Cards are used only where a card is the object (a partner, a team member); tables and panels are separated by hairlines, not shadows.
+Fixed dark sidebar (240px), sticky topbar (56px, search + role + notifications), scrolling content at max-width 1280 with 24px gutters. Data pages follow a fixed rhythm: page header → filter rail → content panel. Cards are used only where a card is the object (a partner, a team member); tables and panels are separated by hairlines, not shadows.
+
+Metric groups use a flat strip with shared alignment and thin dividers. Each screen gives its actionable or defining figure the largest type; supporting figures remain quieter. On phones, filters fill the available width, compact buttons grow to a comfortable touch size, and data tables become labelled two-column records.
 
 ## Structure that carries meaning
 
